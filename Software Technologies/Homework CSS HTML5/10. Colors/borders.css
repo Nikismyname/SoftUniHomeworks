@@ -1,0 +1,29 @@
+.blue{
+    border: solid blue 2px;
+    text-align: center;
+    background: lightgrey;
+    border-radius: 10px
+}
+.blue span{
+    color: blue;
+}
+
+.green{
+    border: solid green 2px;
+    text-align: center;
+    background: lightgrey;
+    border-radius: 10px
+}
+.green span{
+    color: green;
+}
+
+.red{
+    border: solid red 2px;
+    text-align: center;
+    background: lightgrey;
+    border-radius: 10px
+}
+.red span{
+    color: red;
+}
