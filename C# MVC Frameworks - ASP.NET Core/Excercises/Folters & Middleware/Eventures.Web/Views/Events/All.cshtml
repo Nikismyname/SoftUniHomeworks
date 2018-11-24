@@ -1,0 +1,28 @@
+﻿@model EventAll[]
+<h1 class="text-center">All Events</h1>
+
+<hr class="hr-2 bg-eventure" />
+<table class="table">
+    <thead class="">
+        <tr class="row ">
+            <th class="col-1 border-top-0">#</th>
+            <th class="col-3 border-top-0">Name</th>
+            <th class="col-3 border-top-0">Start</th>
+            <th class="col-3 border-top-0">End</th>
+            <th class="col-2 border-top-0">Place</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="row">
+                <th class="col-1 font-weight-normal">@item.Number</th>
+                <th class="col-3 font-weight-normal">@item.Name</th>
+                <th class="col-3 font-weight-normal">@item.Start.ToString("dd-MMM-yyyy hh:mm:ss")</th>
+                <th class="col-3 font-weight-normal">@item.End.ToString("dd-MMM-yyyy hh:mm:ss")</th>
+                <th class="col-2 font-weight-normal">@item.Place</th>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr class="hr-2 bg-eventure" />

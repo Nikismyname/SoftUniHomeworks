@@ -1,0 +1,23 @@
+﻿.text-black {
+    color:black;
+}
+
+.hr-2 {
+    height: 2px;
+}
+
+.hr-black {
+    background-color:black;
+}
+
+.bg-eventure {
+    background-color: #AFEEEE;
+}
+
+.bg-grey {
+    background-color: darkgrey;
+}
+
+.text-grey {
+    color: darkgrey;
+}

@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Eventures.Web</title>
+
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css">
+    </environment>
+
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg mb-4" style="background-color:#AFEEEE">
+        <div class="content-restricter container body-content">
+            <a class="navbar-brand text-black font-weight-bold" href="/">Eventures</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link text-black font-weight-bold" href="/">Home</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>
+                            <div class="dropdown">
+                                <button type="button" class="nav-link btn btn-link dropdown-toggle text-black font-weight-bold border-0" data-toggle="dropdown">
+                                    Events
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="/Events/All">All Events</a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a class="dropdown-item" href="/Events/Create">Create Event</a>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                <partial name="_LoginPartial">
+            </div>
+        </div>
+    </nav>
+
+    <partial name="_CookieConsentPartial" />
+
+    <div class="container body-content">
+        @RenderBody()
+        <div class="container-fluid chushka-bg-color mt-3" style="background-color:#AFEEEE">
+            <div class="p-2 text-center">
+                &copy; CopyRight Eventures inc 2018-2018. All rights reserved.
+            </div>
+        </div>
+    </div>
+    <environment include="Development">
+        <script src="~/js/popper.js"></script>
+        <script src="~/js/jquery.js"></script>
+        <script src="~/js/bootstrap.js"></script>
+    </environment>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

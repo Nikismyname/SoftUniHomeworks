@@ -1,0 +1,71 @@
+﻿@model EventCreate
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="row">
+    <div class="offset-2 col-md-7">
+        <h1 class="text-center">Create Event</h1>
+        <form method="post">
+            <hr class="hr-2 bg-eventure" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Name..." />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="Place"></label>
+                        <input asp-for="Place" class="form-control" placeholder="Place..." />
+                        <span asp-validation-for="Place" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr class="hr-2 bg-eventure" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="Start"></label>
+                        <input asp-for="Start" class="form-control" placeholder="Start..." />
+                        <span asp-validation-for="Start" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="End"></label>
+                        <input asp-for="End" class="form-control" placeholder="End..." />
+                        <span asp-validation-for="End" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr class="hr-2 bg-eventure" />
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="TotalTickets"></label>
+                        <input asp-for="TotalTickets" class="form-control" placeholder="Total Tickets..." />
+                        <span asp-validation-for="TotalTickets" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group text-center">
+                        <label class="font-weight-bold" asp-for="PricePerTicket"></label>
+                        <input asp-for="PricePerTicket" class="form-control" placeholder="Price Per Ticket..." />
+                        <span asp-validation-for="PricePerTicket" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr class="hr-2 bg-eventure" />
+            <div class="text-center">
+                <button type="submit" class="btn btn-default bg-eventure">Create Event</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
