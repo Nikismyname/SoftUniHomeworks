@@ -1,0 +1,13 @@
+select q.Names, q.Class from
+(select 
+	c.FirstName + ' ' + c.LastName as Names,
+	m.Class,
+	rank() over (partition by c.Id order by count(m.Id) desc) as [Rank],
+	c.Id
+from Clients as c 
+join Orders as o on o.ClientId = c.Id
+join Vehicles as v on v.Id = o.VehicleId
+join Models as m on m.Id = v.ModelId 
+group by c.Id, c.FirstName, c.LastName, m.Class) as q 
+where q.[Rank] = 1
+order by q.Names, q.Class, q.Id

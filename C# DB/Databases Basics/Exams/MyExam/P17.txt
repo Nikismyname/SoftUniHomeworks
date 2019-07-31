@@ -1,0 +1,10 @@
+select
+	i.Name as Item, 
+	c.Name as Category,
+	 (sum (oi.Quantity)) as [Count],
+	 (sum (oi.Quantity * i.Price)) as TotalPrice
+from Items as i 
+left join OrderItems as oi on oi.ItemId = i.Id
+left join Categories as c on i.CategoryId = c.Id
+group by i.Id, i.Name, i.CategoryId, c.Name
+order by TotalPrice desc, [Count] desc 

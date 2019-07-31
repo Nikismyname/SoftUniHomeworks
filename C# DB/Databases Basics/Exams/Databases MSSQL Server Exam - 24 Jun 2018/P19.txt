@@ -1,0 +1,42 @@
+create procedure usp_SwitchRoom(@TripId int, @TargetRoomId int)
+as 
+begin
+	declare @hotelId int = 
+	(
+		select h.Id from Trips as t 
+		join Rooms as r on r.Id = t.RoomId
+		join Hotels as h on h.Id = r.HotelId
+		where t.Id = @TripId
+	)
+
+    declare @targetHotelId int = 
+	(
+		select h.Id from Rooms as r 
+		join Hotels as h on h.Id = r.HotelId
+		where r.Id = @TargetRoomId
+	)
+
+	if(@targetHotelId != @hotelId)
+      THROW 50013, 'Target room is in another hotel!', 1
+
+
+	declare @peopleInTrip int = 
+	(
+		select count (ta.AccountId) from Trips as t 
+		join AccountsTrips as ta on ta.TripId = t .Id
+		where t.Id = @TripId
+	)
+
+	declare @roomCapacity int= 
+	(
+		select r.Beds from Rooms as r
+		where r.Id = @TargetRoomId
+	)
+
+	if(@roomCapacity < @peopleInTrip)
+      THROW 50013, 'Not enough beds in target room!', 1
+
+	update Trips
+	set RoomId = @TargetRoomId
+	where Trips.Id = @TripId
+end

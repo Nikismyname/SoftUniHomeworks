@@ -1,0 +1,9 @@
+select top (3)
+	m.FirstName + ' ' +m.LastName as Mechanic,
+	count(j.JobId) as Jobs
+from Jobs as j 
+join Mechanics as m on m.MechanicId = j.MechanicId
+where j.Status != 'Finished' 
+group by m.MechanicId, m.LastName,m.FirstName
+having count(j.JobId) > 1
+order by Jobs desc, m.MechanicId asc 

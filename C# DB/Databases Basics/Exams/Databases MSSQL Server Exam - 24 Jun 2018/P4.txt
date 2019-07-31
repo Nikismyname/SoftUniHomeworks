@@ -1,0 +1,2 @@
+delete from AccountsTrips
+where AccountId = 4

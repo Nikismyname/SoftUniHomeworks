@@ -1,0 +1,8 @@
+select
+	day(o.DateTime) as [Day],
+	cast (avg(i.Price * oi.Quantity)as decimal(20,2)) as [Total profit]
+from Orders as o 
+join OrderItems as oi on oi.OrderId = o.Id
+join Items as i on i.Id = oi.ItemId
+group by day(o.DateTime)
+order by day(o.DateTime) asc 

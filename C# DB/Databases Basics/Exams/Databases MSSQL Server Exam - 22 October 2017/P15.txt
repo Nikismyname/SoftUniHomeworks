@@ -1,0 +1,11 @@
+select d.Name, 
+case when AVG(DATEDIFF(DAY, r.OpenDate, r.CloseDate)) is null 
+	then 'no info' 
+	else cast (AVG(DATEDIFF(DAY, r.OpenDate, r.CloseDate)) as nvarchar(50))
+end 
+	as [Average Duration]
+from Departments as d 
+join Categories as c on c.DepartmentId = d.Id
+join Reports as r on r.CategoryId = c.Id
+group by d.Id, d.Name
+order by d.Name

@@ -1,0 +1,14 @@
+select 
+	t.[Name],
+	MalePercent = case when sum(case when c.Gender = 'M' then 1 else 0 end) = 0 then NULL 
+	else cast(cast (floor(cast(sum (case when c.Gender = 'M' then 1 else 0 end) as decimal(15,2))
+				    /count(c.Id) * 100)as int)as nvarchar(50)) end,
+				  
+	FemalePercent = case when sum(case when c.Gender = 'F' then 1 else 0 end) = 0 then NULL
+	else cast(cast (floor(cast(sum (case when c.Gender = 'F' then 1 else 0 end) as decimal(15,2))
+				    /count(c.Id) * 100)as int)as nvarchar(50)) end
+from Towns as t 
+join Orders as o on o.TownId = t.Id
+join Clients as c on c.Id = o.ClientId
+group by t.Id, t.[Name]
+order by t.[Name], t.id

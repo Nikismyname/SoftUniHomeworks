@@ -1,0 +1,34 @@
+select
+	m.Manufacturer + ' - ' +m.Model as Vehicle,
+	case when count(o.Id) = 0 then 'home'
+		 when (select h.ReturnDate from 
+			  (select 
+			  	v1.Id,
+			  	o1.ReturnDate,
+			  	row_number() over (partition by v1.Id order by o1.CollectionDate desc) as rowNumber
+			  from Vehicles as v1 
+			  left join Orders as o1 on o1.VehicleId = v1.Id
+			  left join Models as m1 on m1.Id = v1.ModelId
+			  left join Offices as ofi on ofi.Id = o1.ReturnOfficeId
+			  left join Towns as t1 on t1.Id = ofi.TownId
+			  ) as h
+			  where h.rowNumber = 1 and h.Id =v.Id) is null then 'on a rent'
+		 else (select h.townName + ' - ' + h.officeName from 
+			  (select 
+				t1.[Name] as townName,
+				ofi.[Name] as officeName,
+				v1.Id,
+			  	row_number() over (partition by v1.Id order by o1.CollectionDate desc) as rowNumber
+			  from Vehicles as v1 
+			  left join Orders as o1 on o1.VehicleId = v1.Id
+			  left join Models as m1 on m1.Id = v1.ModelId
+			  left join Offices as ofi on ofi.Id = o1.ReturnOfficeId
+			  left join Towns as t1 on t1.Id = ofi.TownId
+			  ) as h
+			  where h.rowNumber = 1 and h.Id =v.Id)
+	end as [Location]
+from Vehicles as v 
+left join Orders as o on o.VehicleId = v.Id
+join Models as m on m.Id = v.ModelId
+group by V.Id, m.Manufacturer, m.Model
+order by Vehicle asc, v.Id asc

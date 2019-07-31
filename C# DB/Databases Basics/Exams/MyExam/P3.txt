@@ -1,0 +1,3 @@
+update Items 
+set Price = Price + Price* 27 / 100
+where CategoryId in (1,2,3)

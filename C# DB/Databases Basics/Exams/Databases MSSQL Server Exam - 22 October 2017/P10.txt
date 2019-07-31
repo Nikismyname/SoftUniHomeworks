@@ -1,0 +1,8 @@
+
+select 
+	e.FirstName+ ' ' +e.LastName as 'Name',
+    count(distinct(r.UserId)) as 'Users Number'   
+from employees as e 
+left join Reports as r on r.EmployeeId = e.Id
+group by e.Id, e.FirstName, e.LastName
+order by 'Users Number' desc, 'Name' asc

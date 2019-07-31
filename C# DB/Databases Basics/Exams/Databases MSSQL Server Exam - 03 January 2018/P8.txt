@@ -1,0 +1,12 @@
+declare @notReturnes table (Id int)
+
+insert into @notReturnes
+select v.Id from Vehicles as v
+join Orders as o on o.VehicleId = v.Id
+where o.ReturnDate is null
+group by v.Id
+
+select m.Model, m.Seats, v.Mileage from Vehicles as v
+join Models as m on m.Id = v.ModelId
+where v.Id not in (select * from @notReturnes)
+order by v.Mileage, m.Seats desc, m.Id  

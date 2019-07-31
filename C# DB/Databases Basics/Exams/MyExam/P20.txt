@@ -1,0 +1,10 @@
+create trigger TriggyTheTrigger2 on OrderItems for delete 
+as 
+begin
+insert into DeletedOrders 
+select 
+	d.OrderId, 
+	d.ItemId, 
+	d.Quantity 
+from deleted as d
+end

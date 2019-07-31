@@ -1,0 +1,31 @@
+select 
+	case when year(c.BirthDate) >= 1970 and year(c.BirthDate) <= 1979 then '70''s'
+		 when year(c.BirthDate) >= 1980 and year(c.BirthDate) <= 1989 then '80''s'
+		 when year(c.BirthDate) >= 1990 and year(c.BirthDate) <= 1999 then '90''s' 
+	else 'Others'
+		end as AgeGroup,
+	sum(o.Bill) as bill, 
+	avg(o.TotalMileage) as mileage
+from Clients as c 
+join Orders as o on o.ClientId = c.Id
+group by case when year(c.BirthDate) >= 1970 and year(c.BirthDate) <= 1979 then '70''s'
+		 when year(c.BirthDate) >= 1980 and year(c.BirthDate) <= 1989 then '80''s'
+		 when year(c.BirthDate) >= 1990 and year(c.BirthDate) <= 1999 then '90''s' 
+	     else 'Others'
+		 end
+
+select  q.AgeGroup, sum(q.bill) as Revenue, sum(q.mileage)/sum(q.cnt) as AverageMileage from 
+(select 
+	sum(o.Bill) as bill, 
+	sum(o.TotalMileage) as mileage,
+	count(o.Id) as cnt,
+	case when year(c.BirthDate) >= 1970 and year(c.BirthDate) <= 1979 then '70''s'
+		 when year(c.BirthDate) >= 1980 and year(c.BirthDate) <= 1989 then '80''s'
+		 when year(c.BirthDate) >= 1990 and year(c.BirthDate) <= 1999 then '90''s' 
+	else 'Others'
+	end as AgeGroup
+from Clients as c 
+join Orders as o on o.ClientId = c.Id
+group by c.Id, c.BirthDate) as q
+group by q.AgeGroup
+order by q.AgeGroup asc

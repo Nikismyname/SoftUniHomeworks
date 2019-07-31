@@ -1,0 +1,9 @@
+select 
+	e.FirstName,
+	e.LastName,
+	avg (datediff(hour,s.CheckIn, s.CheckOut)) as [Work hours]
+from Employees as e 
+join Shifts as s on s.EmployeeId = e.Id
+group by e.Id, e.FirstName, e.LastName
+having avg (datediff(hour,s.CheckIn, s.CheckOut)) > 7
+order by [Work hours] desc, e.Id

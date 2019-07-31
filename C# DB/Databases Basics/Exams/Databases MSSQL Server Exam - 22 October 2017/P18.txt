@@ -1,0 +1,26 @@
+create procedure usp_AssignEmployeeToReport(@employeeId int, @reportId int)
+as 
+begin 
+
+	begin tran
+	if
+	(
+		(select e.DepartmentId from Employees as e
+		where e.Id = @employeeId) = 
+		(select c.DepartmentId from Reports as r
+		join Categories as c on c.Id = r.CategoryId
+		where r.Id = @reportId)
+	)
+	begin 
+		update Reports
+		set EmployeeId = @employeeId
+		where Id = @reportId
+		commit tran
+	end 
+	else 
+	begin 
+		raiserror('Employee doesn''t belong to the appropriate department!', 16,1);
+		rollback 
+		end 
+end
+ 

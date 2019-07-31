@@ -1,0 +1,4 @@
+select t.[Name] as TownName, count(*) as OfficesNumbe from Towns as t
+join Offices as o on o.TownId = t.Id
+group by t.Id, t.Name
+order by OfficesNumbe desc, t.[Name]

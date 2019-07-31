@@ -1,0 +1,66 @@
+create database Supermarket
+go
+use Supermarket
+go
+create table Categories(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 30 symbols, Unicode	NULL is not allowed
+ Id int primary key identity not null,
+ [Name] nvarchar(30) not null
+ )
+ go
+create table Items(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 30 symbols, Unicode	NULL is not allowed
+--Price	Decimal number with two-digit precision	NULL is not allowed
+--CategoryId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Categories
+Id int primary key identity not null,
+[Name] nvarchar(30) not null,
+Price decimal (20, 2) not null,
+CategoryId int not null foreign key references Categories(Id),
+)
+go
+create table Employees(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--FirstName	String up to 50 symbols, Unicode	NULL is not allowed
+--LastName	String up to 50 symbols, Unicode	NULL is not allowed
+--Phone	String with exactly 12 symbols	NULL is not allowed
+--Salary	Decimal number with two-digit precision	NULL is not allowed
+Id int primary key identity not null,
+FirstName nvarchar(50) not null,
+LastName nvarchar(50) not null,
+Phone char(12) not null,
+Salary decimal(20,2) not null
+)
+go
+create table Orders(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--DateTime	DateTime	NULL is not allowed
+--EmployeeId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Employees
+Id int primary key identity not null,
+[DateTime] datetime not null,
+EmployeeId  int not null foreign key references Employees(Id) 
+)
+go
+create table OrderItems(
+--OrderId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Orders
+--ItemId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Items
+--Quantity	Integer from 0 to 2,147,483,647	NULL is not allowed, must be at least 1
+OrderId int not null foreign key references Orders(Id),
+ItemId int not null foreign key references Items(Id),
+Quantity int not null check(Quantity >=1),
+primary key (OrderId, ItemId)
+)
+go
+create table Shifts(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--EmployeeId	Integer from 0 to 2,147,483,647	Unique table identificator , Relationship with table Employees
+--CheckIn	DateTime	NULL is not allowed
+--CheckOut	DateTime	NULL is not allowed, must be after CheckIn date
+Id int identity not null,
+EmployeeId int not null foreign key references Employees(Id),
+CheckIn datetime not null,
+CheckOut datetime not null,
+constraint CK_OutAfterIn check(CheckOut > CheckIn),
+primary key (Id, EmployeeId)
+)

@@ -1,0 +1,21 @@
+create trigger OnDelivary on Orders for update 
+as
+begin
+	declare @delDelivered bit = (select d.Delivered from deleted as d)
+	declare @insDelivered bit = (select d.Delivered from inserted as d)
+
+	declare @parts table (PartId int, Qtt int)
+
+	if(@delDelivered = 0 and @insDelivered = 1)
+	begin 
+		insert into @parts  
+		select op.PartId, op.Quantity from deleted as d 
+		join OrderParts as op on d.OrderId = op.OrderId
+
+		update Parts
+		set 
+		StockQty += p1.Qtt
+		from 
+		Parts as p join @parts as p1 on p.PartId =  p1.PartId
+	end 
+end

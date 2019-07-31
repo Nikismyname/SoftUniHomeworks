@@ -1,0 +1,18 @@
+select
+	m.FirstName + ' ' + m.LastName as Mechanic,
+	v.Name as Vendor,
+	sum(op.Quantity) as Parts,
+	cast (cast (floor (cast (sum(op.Quantity) as decimal) / cast ((select isnull (sum(op.Quantity), 0) from Mechanics as m1 
+					   join Jobs as j on j.MechanicId = m1.MechanicId
+					   join Orders as o on o.JobId = j.JobId
+					   join OrderParts as op on op.OrderId = o.OrderId
+					   where m1.MechanicId = m.MechanicId) as decimal) * 100) as int)as nvarchar) + '%'
+	as Preference
+from Mechanics as m 
+join Jobs as j on j.MechanicId = m.MechanicId
+join Orders as o on o.JobId = j.JobId
+join OrderParts as op on op.OrderId = o.OrderId
+join Parts as p on p.PartId = op.PartId
+join Vendors as v on v.VendorId = p.VendorId
+group by m.MechanicId, m.FirstName, m.LastName, v.VendorId, v.[Name]
+order by Mechanic asc, Parts desc, v.[Name] asc

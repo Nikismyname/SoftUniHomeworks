@@ -1,0 +1,21 @@
+create procedure usp_CancelOrder(@OrderId int, @CancelDate datetime)
+as
+begin
+	if (select ISNULL(COUNT(o.Id),0) from Orders as o where o.Id = @OrderId) = 0
+	begin 
+	raiserror('The order does not exist!', 16 ,1) 
+	return 
+	end
+
+	if(select DATEDIFF(DAY, o.DateTime, @CancelDate) from Orders as o where o.Id = @OrderId)>= 3 
+    begin
+	raiserror('You cannot cancel the order!', 16 ,1) 
+	return  
+	end 
+
+	delete from OrderItems 
+	where OrderId = @OrderId
+
+	delete from Orders
+	where Id = @OrderId
+end  

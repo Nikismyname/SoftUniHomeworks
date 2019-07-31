@@ -1,0 +1,9 @@
+select top (10)
+	o.Id as OrderId,
+	max (i.Price) as ExpensivePrice,
+	min (i.Price) as CheapPrice
+from Orders as o 
+join OrderItems as oi on oi.OrderId = o.Id
+join Items as i on i.Id = oi.ItemId
+group by o.Id
+order by ExpensivePrice desc, o.Id asc

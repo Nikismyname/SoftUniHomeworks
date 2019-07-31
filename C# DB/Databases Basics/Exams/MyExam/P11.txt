@@ -1,0 +1,4 @@
+select e.Id, e.FirstName, e.LastName from Employees as e 
+join Orders as o on o.EmployeeId = e.Id
+group by e.Id, e.FirstName, e.LastName
+order by e.Id

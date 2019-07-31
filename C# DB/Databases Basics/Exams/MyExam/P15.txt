@@ -1,0 +1,22 @@
+select 
+	h.[Full Name], 
+		(select DATEDIFF (hour, s.CheckIn, s.CheckOut) from Employees as e 
+		join Shifts as s on s.EmployeeId = e.Id
+		where e.Id = h.Id and h.DateTime > s.CheckIn and h.DateTime< s.CheckOut ) as WorkHours,
+	h.TotalPrice
+from 
+	(select
+	    e.Id,
+		o.DateTime,
+		e.FirstName + ' ' + e.LastName as [Full Name],
+		sum (i.Price * oi.Quantity) as TotalPrice,
+		row_number() over (partition by e.Id order by sum (i.Price * oi.Quantity) desc) [rank]
+	from Employees as e 
+	join Orders as o on o.EmployeeId = e.Id
+	join OrderItems as oi on oi.OrderId = o.Id
+	join Items as i on i.Id = oi.ItemId
+	group by e.Id, e.FirstName, e.LastName, o.Id, o.DateTime) as h
+where h.[rank] = 1 and  (select DATEDIFF (hour, s.CheckIn, s.CheckOut) from Employees as e 
+						 join Shifts as s on s.EmployeeId = e.Id
+						 where h.Id = e.Id and h.DateTime > s.CheckIn and h.DateTime< s.CheckOut ) is not null
+order by h.[Full Name],WorkHours desc, h.TotalPrice desc

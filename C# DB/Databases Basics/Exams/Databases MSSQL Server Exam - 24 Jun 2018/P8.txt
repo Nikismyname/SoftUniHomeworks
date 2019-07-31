@@ -1,0 +1,4 @@
+select c.Name, count(h.Id) as Hotels from Cities as c
+left join Hotels as h on h.CityId = c.Id
+group by c.Id, c.Name
+order by count(h.Id) desc, c.Name

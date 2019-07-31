@@ -1,0 +1,4 @@
+select e.FirstName, e.LastName, count(o.Id) as [Count] from Employees as e
+join Orders as o on o.EmployeeId = e.Id
+group by e.Id , e.FirstName, e.LastName
+order by [Count] desc, e.FirstName

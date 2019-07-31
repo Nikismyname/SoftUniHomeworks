@@ -1,0 +1,16 @@
+select h.Id as [AccountId], h.Email , h.CountryCode, h.trips from 
+	(select
+		a.Id,
+		c.CountryCode,
+		a.Email,
+		count(t.Id)as trips,
+		row_number() over (partition by c.CountryCode order by count(t.Id) desc) as [rank]
+	from Accounts as a 
+	join AccountsTrips as ta on ta.AccountId = a.Id
+	join Trips as t on t.Id = ta.TripId
+	join Rooms as r on r.Id = t.RoomId
+	join Hotels as h on h.Id = r.HotelId
+	join Cities as c on c.Id = h.CityId
+	group by c.CountryCode, a.Id, a.Email) as h 
+where h.rank =1
+order by h.trips desc, h.Id

@@ -1,0 +1,100 @@
+use ReportService
+
+create table Users
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity x 
+--Username	String up to 30 symbols, Unicode	NULL is not allowed, Unique values only x
+--Password	String up to 50 symbols, Unicode	NULL is not allowed x
+--Name	String up to 50 symbols, Unicode x	
+--Gender	Character with exactly 1 symbol	Could be: 'M' or 'F' x
+--BirthDate	DateTime x	
+--Age	Integer from 0 to 2,147,483,647	
+--Email	String up to 50 symbols, Unicode	NULL is not allowed
+
+	Id int PRIMARY KEY IDENTITY, 
+	Username NVARCHAR(30) NOT NULL UNIQUE,
+	[Password] nvarchar(50) not null,
+	[Name] nvarchar(50),
+	Gender char(1),
+	BirthDate datetime,
+	Age int,
+	Email nvarchar(50) not null,
+
+	constraint CK_Gender_MorF check (Gender in ('M','F')) 
+)
+
+create table Departments
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 50 symbols, Unicode	NULL is not allowed
+
+	Id int primary key identity,
+	Name nvarchar(50) not null,
+)
+
+create table Employees
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--FirstName	String up to 25 symbols, Unicode	
+--LastName	String up to 25 symbols, Unicode	
+--Gender	Character with exactly 1 symbol	Could be: 'M' or 'F'
+--BirthDate	DateTime	
+--Age	Integer from 0 to 2,147,483,647	
+--DepartmentId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Departments
+	Id int primary key identity,
+	FirstName nvarchar(25),
+	LastName nvarchar(25),
+	Gender char(1),
+	BirthDate datetime,
+	Age int,
+	DepartmentId int not null,
+
+    constraint CK_Gender_MorF2 check (Gender in ('F' ,'M')),
+	constraint FK_Employee_Department foreign key (DepartmentId) references Departments(Id),
+)
+
+create table Categories
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 50 symbols	NULL is not allowed
+--DepartmentId	Integer from 0 to 2,147,483,647	Relationship with table Departments
+	Id int primary key identity,
+	[Name] nvarchar(50) not null,
+	DepartmentId int null,
+
+	constraint FK_Categories_Departments foreign key (DepartmentId) references Departments(Id),
+)
+
+create table [Status]
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Label	String up to 30 symbols	NULL is not allowed
+	Id int identity primary key,
+	Label nvarchar(30) not null,
+)
+
+create table Reports
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--CategoryId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Categories
+--StatusId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Status
+--OpenDate	DateTime	NULL is not allowed
+--CloseDate	DateTime	
+--Description	String up to 200 symbols	
+--UserId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Users
+--EmployeeId	Integer from 0 to 2,147,483,647	Relationship with table Employees
+
+	Id int identity primary key,
+	CategoryId int not null,
+	StatusId int not null,
+	OpenDate datetime not null,
+	CloseDate datetime null,
+	[Description] nvarchar(200),
+	UserId int not null,
+	EmployeeId int null,
+
+	constraint FK_Reports_Category foreign key (CategoryId) references Categories(Id),
+	constraint FK_Reports_Status foreign key (StatusId) references [Status](Id),
+	constraint FK_Reports_Users foreign key (UserId) references Users(Id),
+	constraint FK_Reports_Emplyees foreign key (EmployeeId) references Employees(Id),
+)

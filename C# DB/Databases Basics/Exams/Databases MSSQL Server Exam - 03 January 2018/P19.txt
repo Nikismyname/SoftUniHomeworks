@@ -1,0 +1,17 @@
+CREATE TRIGGER OnMilageAddedToOrder ON dbo.Orders FOR UPDATE
+as 
+begin
+	declare @table table (id int, mileage int)
+	insert into @table 
+		select 
+			d.VehicleId , i.TotalMileage 
+		from deleted as d 
+	    join inserted as i on i.Id = d.Id
+	    where d.TotalMileage is null and i.TotalMileage is not null
+
+	UPDATE Vehicles
+	SET
+	    Vehicles.Mileage += t.mileage 
+	FROM
+		Vehicles as v INNER JOIN @table as t ON v.Id = t.id; 
+end 

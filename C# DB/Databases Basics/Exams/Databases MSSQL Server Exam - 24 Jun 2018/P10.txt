@@ -1,0 +1,11 @@
+select 
+	a.Id as AccountId,
+	a.FirstName + ' '+ a.LastName as FullName,
+	max(DATEDIFF(Day,t.ArrivalDate, t.ReturnDate)) as LongestTrip,
+    	min(DATEDIFF(Day,t.ArrivalDate, t.ReturnDate)) as ShortestTrip
+from Accounts as a
+join AccountsTrips as ta on ta.AccountId = a.Id
+join Trips as t on t.Id = ta.TripId
+where a.MiddleName is null and t.CancelDate is null
+group by a.Id,a.FirstName + ' '+ a.LastName
+order by LongestTrip desc, a.Id asc

@@ -1,0 +1,9 @@
+select r.OpenDate, r.[Description],u.Email as [Reporter Email] from Reports as r
+	join Users as u on u.Id = r.UserId 
+where r.CloseDate is null and
+	len(r.[Description])> 20 and
+	r.[Description] like '%str%' and 
+	(select d.[Name] from Categories as c 
+	join Departments as d on d.Id = c.DepartmentId
+	where c.Id = r.CategoryId) in ('Infrastructure', 'Emergency', 'Roads Maintenance')
+order by r.OpenDate,u.Email, r.Id

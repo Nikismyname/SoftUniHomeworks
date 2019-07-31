@@ -1,0 +1,18 @@
+select 
+    d.Name as [Department Name],
+    c.Name as [Category Name],
+    cast (round (cast(count(r.Id)as decimal(15,2)) / 
+		(
+			select cast(count(*)as decimal(15,2)) from Departments as d1 
+			join Categories as c1 on c1.DepartmentId = d1.Id
+			join Reports as r1 on r1.CategoryId = c1.Id
+			where d1.Id = d.Id
+			group by d1.Id
+		) 
+		* 100,0,0) as int)    
+	as [Percentage]
+from Categories as c 
+join Departments as d on d.Id = c.DepartmentId
+join Reports as r on r.CategoryId = c.Id
+group by c.Id, c.Name, d.Id, d.Name
+order by d.Name, c.Name

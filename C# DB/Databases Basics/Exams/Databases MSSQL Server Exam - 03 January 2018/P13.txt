@@ -1,0 +1,10 @@
+select m.Manufacturer, avg(m.Consumption) from  Models as m
+where m.Id in 
+	(select top(7) m.Id from Models as m 
+	join Vehicles as v on v.ModelId = m.Id
+	join Orders as o on o.VehicleId = v.Id
+	group by m.Id
+	order by count(o.Id) desc) 
+group by m.Manufacturer
+having avg(m.Consumption) between 5 and 15
+order by m.Manufacturer ,avg(m.Consumption)

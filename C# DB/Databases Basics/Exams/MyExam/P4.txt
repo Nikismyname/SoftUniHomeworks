@@ -1,0 +1,2 @@
+delete from OrderItems
+where OrderId = 48 

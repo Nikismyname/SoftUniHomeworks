@@ -1,0 +1,3 @@
+select s.Id, s.[Name] from Cities as s
+where s.CountryCode = 'BG'
+order by s.Name

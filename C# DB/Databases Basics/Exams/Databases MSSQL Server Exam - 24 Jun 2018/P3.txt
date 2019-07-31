@@ -1,0 +1,3 @@
+update Rooms 
+set Price = price + price / 100 * 14 
+where HotelId in (5, 7 ,9)

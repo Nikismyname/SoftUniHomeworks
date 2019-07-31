@@ -1,0 +1,23 @@
+create procedure usp_MoveVehicle(@vehicleId int, @officeId int)
+as 
+begin
+	begin tran
+	declare @carsInOffice int = 
+		(select count(v.Id) from Offices as o
+		 join Vehicles as v on v.OfficeId = o.Id
+		 where o.Id = @officeId)
+	declare @officeParkingSpots int = (select o.ParkingPlaces from Offices as o where o.Id = @officeId )  
+	
+	if( @carsInOffice >= @officeParkingSpots)
+	begin
+	raiserror('Not enough room in this office!', 16,1); 
+	rollback  
+	end
+	else 
+	begin
+		update Vehicles
+		set OfficeId = @officeId
+		where Id = @vehicleId 
+		commit tran 
+	end 
+end  

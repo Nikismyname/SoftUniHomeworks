@@ -1,0 +1,12 @@
+create function udf_GetCost (@jobId int )
+returns decimal(15,2)
+begin 
+declare @result decimal(15,2) = 
+	(select isnull(sum(op.Quantity * p.Price),0) from Jobs as j
+	join Orders as o on o.JobId = j.JobId
+	join OrderParts as op on op.OrderId = o.OrderId
+	join Parts as p on p.PartId = op.PartId
+	where j.JobId = @jobId
+	)
+return @result 
+end 

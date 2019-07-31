@@ -1,0 +1,3 @@
+select j.Status, j.IssueDate from Jobs as j
+where j.Status != 'Finished'
+order by j.IssueDate , j.JobId

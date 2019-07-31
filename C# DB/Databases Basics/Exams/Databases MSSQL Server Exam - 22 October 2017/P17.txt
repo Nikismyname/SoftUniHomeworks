@@ -1,0 +1,7 @@
+create function udf_GetReportsCount(@employeeId int, @statusId int )
+returns int
+begin
+	return 
+	(select count(*) from Reports as r 
+	where r.EmployeeId = @employeeId and r.StatusId = @statusId)
+end 

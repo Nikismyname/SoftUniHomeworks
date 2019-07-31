@@ -1,0 +1,25 @@
+create function udf_GetAvailableRoom(@HotelId int, @Date date, @People int)
+returns nvarchar(200)
+begin 
+	declare @result nvarchar(200) =  
+	(select top (1) 'Room ' + cast ( h.roomId as nvarchar) + ': ' + h.Type + ' ('+ cast (h.Beds as nvarchar) +' beds) - $'+cast(h.Price as nvarchar)  from 
+	(select
+	    h.Id as hotelId,
+	    r.Id as roomId,
+		r.[Type],
+		r.Beds, 
+		(r.Price + h.BaseRate) * 2 as Price,
+		sum(case when t.ReturnDate> @Date and t.ArrivalDate < @Date and t.CancelDate is null then 1 else 0 end) as occupationCount
+	from Hotels as h 
+	join Rooms as r on h.Id = r.HotelId
+	join Trips as t on t.RoomId = t.Id
+	group by r.Id , r.[Type],r.Beds,r.Price, h.Id ,h.BaseRate) as h 
+	where occupationCount = 0 and h.hotelId = @HotelId and h.Beds > = @People
+	order by h.Price desc)
+
+	if(@result is null)
+	begin
+		set @result = 'No rooms available' 
+	end
+	return @result
+end

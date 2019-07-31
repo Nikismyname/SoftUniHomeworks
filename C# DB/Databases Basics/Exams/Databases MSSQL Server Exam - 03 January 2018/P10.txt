@@ -1,0 +1,5 @@
+select m.Manufacturer, m.Model, count(o.Id) as TimesOrdered from Models as m 
+left join Vehicles as v on v.ModelId = m.Id
+left join Orders as o on o.VehicleId = v.Id
+group by m.Id,m.Model, m.Manufacturer
+order by TimesOrdered desc, m.Manufacturer desc, m.Model asc

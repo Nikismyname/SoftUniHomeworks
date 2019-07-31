@@ -1,0 +1,15 @@
+select
+	e.FirstName + ' ' + e.LastName as [Full Name],
+	case when datepart(weekday, s.CheckIn) = 1 then 'Sunday'
+		 when datepart(weekday, s.CheckIn) = 2 then 'Monday'
+		 when datepart(weekday, s.CheckIn) = 3 then 'Tuesday'
+		 when datepart(weekday, s.CheckIn) = 4 then 'Wednesday'
+		 when datepart(weekday, s.CheckIn) = 5 then 'Thursday'
+		 when datepart(weekday, s.CheckIn) = 6 then 'Friday'
+		 when datepart(weekday, s.CheckIn) = 7 then 'Saturday'
+	end as [Day of week]
+from Employees as e 
+join Shifts as s on s.EmployeeId = e.Id
+left join Orders as o on o.EmployeeId = e.Id
+where DATEDIFF(hour, s.CheckIn,s.CheckOut) > 12 and o.Id is null
+order by e.Id

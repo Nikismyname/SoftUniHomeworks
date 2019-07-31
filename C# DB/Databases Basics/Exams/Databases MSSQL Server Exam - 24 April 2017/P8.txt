@@ -1,0 +1,8 @@
+select 
+	c.FirstName + ' ' +c.LastName as Client,
+	datediff(day, j.IssueDate, '04/24/2017') as [Days going],
+	j.Status
+from Jobs as j
+join Clients as c on c.ClientId = j.ClientId
+where j.Status != 'Finished'
+order by [Days going] desc, c.ClientId asc

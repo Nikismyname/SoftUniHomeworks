@@ -1,0 +1,8 @@
+select top(1)
+	o.Id as OrderId,
+	isnull(sum (i.Price * oi.Quantity), 0) as TotalPrice
+from Orders as o 
+join OrderItems as oi on oi.OrderId = o.Id
+join Items as i on i.Id = oi.ItemId
+group by o.Id
+order by TotalPrice desc 

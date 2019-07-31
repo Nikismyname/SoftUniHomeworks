@@ -1,0 +1,2 @@
+delete from Orders 
+where ReturnDate is null

@@ -1,0 +1,14 @@
+create trigger OnCompletion ON dbo.Reports FOR UPDATE
+as 
+begin
+	declare @table table (ids int);
+	insert into @table   
+	select d.Id from deleted as d 
+	join inserted as i on i.Id = d.Id
+	where d.CloseDate is null and i.CloseDate is not null
+
+	update Reports
+	set StatusId = 3 
+	--where Id in @table
+	where Id in (select t.ids from @table as t) 
+end 

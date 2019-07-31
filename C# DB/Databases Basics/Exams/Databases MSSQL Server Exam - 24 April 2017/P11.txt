@@ -1,0 +1,10 @@
+select h.Mechanic as Available from 
+	(select
+		m.MechanicId,
+		m.FirstName + ' ' + m.LastName as Mechanic,
+		SUM(case when j.Status != 'Finished' then 1 else 0 end) as activeJobs
+	from Mechanics as m 
+	left join Jobs as j on j.MechanicId = m.MechanicId
+	group by m.MechanicId, m.FirstName, m.LastName) as h
+where h.activeJobs = 0
+order by h.MechanicId 

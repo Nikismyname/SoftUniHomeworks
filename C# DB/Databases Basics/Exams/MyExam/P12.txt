@@ -1,0 +1,10 @@
+select h.Id, h.[Full Name] from 
+	(select
+		e.Id,
+		e.FirstName +' '+ e.LastName as [Full Name],
+		sum (case when datediff(hour,s.CheckIn , s.CheckOut) <4 then 1 else 0 end) as belowFrour
+	from Employees as e 
+	join Shifts as s on s.EmployeeId = e.Id
+	group by e.Id, e.FirstName, e.LastName) as h
+where h.belowFrour > 0
+order by h.Id

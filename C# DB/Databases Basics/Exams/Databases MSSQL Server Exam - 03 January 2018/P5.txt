@@ -1,0 +1,2 @@
+select m.Manufacturer, m.Model from Models as m 
+order by m.Manufacturer, m.Id desc 

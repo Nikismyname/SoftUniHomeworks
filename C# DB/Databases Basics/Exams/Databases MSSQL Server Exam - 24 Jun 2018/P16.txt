@@ -1,0 +1,11 @@
+select
+	t.Id,
+	sum (ta.Luggage),
+	case when sum(ta.Luggage) > 5  then '$' + cast(sum(ta.Luggage) * 5 as varchar)
+	else '$0' 
+	end as Fee
+from AccountsTrips as ta 
+join Trips as t on t.Id = ta.TripId 
+where ta.Luggage> 0
+group by ta.TripId, t.Id
+order by sum (ta.Luggage) desc

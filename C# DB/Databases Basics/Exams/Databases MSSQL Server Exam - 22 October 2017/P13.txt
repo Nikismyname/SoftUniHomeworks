@@ -1,0 +1,21 @@
+select u.Username from Users as u 
+where (isnumeric(substring(u.Username,1,1)) = 1  and 
+	(select count(r.Id) from users as u1
+	join Reports as r on r.UserId = u1.Id
+	where u1.Id = u.Id and  (substring(u.Username,1,1)=  cast(r.CategoryId as nvarchar(4000)))
+	group by u1.id) > 0) or 
+	(isnumeric(substring(u.Username,len(u.Username), 1)) = 1 and 
+	(select count(r1.Id) from users as u2
+	join Reports as r1 on r1.UserId = u2.Id
+	where u2.Id = u.Id and (substring(u.Username,len(u.Username), 1) =cast(r1.CategoryId as nvarchar(4000)))
+	group by u2.id) > 0)
+order by u.Username  
+
+select u.Username from Users as u 
+join Reports as r on r.UserId = u.Id
+where (isnumeric(substring(u.Username,1,1)) = 1  and 
+	cast(r.CategoryId as nvarchar(4000)) = substring(u.Username,1,1))  or 
+	(isnumeric(substring(u.Username,len(u.Username), 1)) = 1 and 
+	cast(r.CategoryId as nvarchar(4000)) = substring(u.Username,len(u.Username), 1))
+group by u.Id, u.Username
+order by u.Username  

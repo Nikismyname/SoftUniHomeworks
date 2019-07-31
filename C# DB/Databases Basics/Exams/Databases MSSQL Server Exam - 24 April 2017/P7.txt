@@ -1,0 +1,7 @@
+select 
+	m.FirstName + ' ' + m.LastName as Mechanic,
+	j.Status,
+	j.IssueDate
+from  Jobs as j 
+join Mechanics as m on m.MechanicId = j.MechanicId
+order by m.MechanicId, j.IssueDate, j.JobId

@@ -1,0 +1,5 @@
+select c.[Name], count(e.Id) from Categories as c 
+join  Departments as d on d.Id = c.DepartmentId
+join Employees as e on e.DepartmentId = d.Id
+group by c.Id, c.[Name]
+order by c.Name

@@ -1,0 +1,14 @@
+select
+	a.Id,
+	a.Email,
+	c.[Name],
+	count(t.id) as Trips 
+from Accounts as a 
+join AccountsTrips as ta on ta.AccountId = a.Id
+join Trips as t on t.Id = ta.TripId
+join Rooms as r on r.Id = t.RoomId
+join Hotels as h on h.Id = r.HotelId
+join Cities as c on c.Id = a.CityId
+where a.CityId = h.CityId
+group by a.Id, a.Email, a.CityId, c.[Name]
+order by count(t.id) desc, a.Id

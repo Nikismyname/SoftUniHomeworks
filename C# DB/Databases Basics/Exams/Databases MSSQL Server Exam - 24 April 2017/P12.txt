@@ -1,0 +1,9 @@
+select isnull(sum (h.smth), 0) as [Parts Total] from 
+	(select 
+		sum(op.Quantity * p.Price) as smth,
+		o.IssueDate 
+	from Orders as o 
+	join OrderParts as op on op.OrderId = o.OrderId
+	join Parts as p on p.PartId = op.PartId
+	where o.IssueDate between '04/03/2017' and '04/24/2017'
+	group by o.OrderId, o.IssueDate) as h

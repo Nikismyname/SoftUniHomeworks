@@ -1,0 +1,4 @@
+select t.Name, o.Name, o.ParkingPlaces from Offices as o
+join Towns as t on t.id = o.TownId
+where o.ParkingPlaces>25
+order by t.Name , o.Id

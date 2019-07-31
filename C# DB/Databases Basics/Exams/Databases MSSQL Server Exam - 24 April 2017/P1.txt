@@ -1,0 +1,235 @@
+create table Clients
+(
+--ClientId	32-bit Integer	Primary table identificator, Identity
+--FirstName	String up to 50 symbols, ASCII	
+--LastName	String up to 50 symbols, ASCII	
+--Phone	String containing 12 symbols	String length is exactly 12 chars long
+ClientId int identity primary key not null,
+FirstName varchar(50) not null,
+LastName varchar(50) not null,
+Phone char(12) not null
+)
+
+create table Mechanics
+(
+--MechanicId	32-bit Integer	Primary table identificator, Identity
+--FirstName	String up to 50 symbols, ASCII	
+--LastName	String up to 50 symbols, ASCII	
+--Address	String up to 255 symbols, ASCII	
+MechanicId int identity primary key not null,
+FirstName varchar(50) not null,
+LastName varchar(50) not null,
+Address varchar(255) not null,
+)
+
+create table Models
+(
+--ModelId	32-bit Integer	Primary table identificator, Identity
+--Name	String up to 50 symbols, ASCII	Unique
+ModelId int primary key identity not null,
+Name varchar(50) unique not null
+)
+
+create table Jobs
+(
+--JobId	32-bit Integer	Primary table identificator, Identity
+--ModelId	32-bit Integer	Relationship with table Models
+--Status	String up to 11 symbols, ASCII	Allowed values: 'Pending', 'In Progress' and 'Finished'; Default value is 'Pending'
+--ClientId	32-bit Integer	Relationship with table Clients
+--MechanicId	32-bit Integer	Relationship with table Mechanics; Can be NULL
+--IssueDate	Date	
+--FinishDate	Date	Can be NULL
+
+JobId int primary key identity not null,
+ModelId int not null foreign key references Models(ModelId),
+Status varchar(11) not null check([Status] in ('Pending', 'In Progress', 'Finished')) default('Pending'),
+ClientId int not null foreign key references Clients(ClientId),
+MechanicId int foreign key references Mechanics(MechanicId),
+IssueDate date not null,
+FinishDate date 
+)
+
+create table Orders
+(
+--OrderId	32-bit Integer	Primary table identificator, Identity
+--JobId	32-bit Integer	Relationship with table Jobs
+--IssueDate	Date	Can be NULL
+--Delivered	Boolean	Default value is False
+OrderId int not null primary key identity,
+JobId int not null foreign key references Jobs(JobId),
+IssueDate date,
+Delivered bit not null default 0
+)
+
+create table Vendors
+(
+--VendorId	32-bit Integer	Primary table identificator, Identity
+--Name	String up to 50 symbols, ASCII	Unique
+VendorId int primary key not null identity,
+Name varchar(50) not null unique
+)
+
+create table Parts
+(
+--PartId	32-bit Integer	Primary table identificator, Identity
+--SerialNumber	String up to 50 symbols, ASCII	Unique
+--Description	String up to 255 symbols, ASCII	Can be NULL
+--Price	Monetary value up to 9999.99	Cannot be zero or negative
+--VendorId	32-bit Integer	Relationship with table Vendors
+--StockQty	32-bit Integer	Cannot be negative; Default value is 0
+PartId int identity not null primary key,
+SerialNumber varchar(50) unique not null,
+Description varchar(255),
+Price decimal(6,2) check (Price > 0) not null,
+VendorId int not null foreign key references Vendors(VendorId),
+StockQty int not null check(StockQty >= 0) default 0
+)
+
+create table OrderParts 
+(
+--OrderId	32-bit Integer	Relationship with table Orders; Primary table identificator
+--PartId	32-bit Integer	Relationship with table Parts; Primary table identificator
+--Quantity	32-bit Integer	Cannot be zero or negative; Default value is 1
+
+OrderId int not null foreign key references Orders(OrderId),
+PartId int not null foreign key references Parts(PartId),
+Quantity int not null check(Quantity > 0 ) default 1,
+constraint PK_OrderParts primary key (OrderId, PartId)
+)
+
+create table PartsNeeded
+(
+--JobId	32-bit Integer	Relationship with table Jobs;Primary table identificator
+--PartId	32-bit Integer	Relationship with table Parts;Primary table identificator
+--Quantity	32-bit Integer	Cannot be zero or negative; Default value is 1
+
+JobId int not null foreign key references Jobs(JobId),
+PartId int not null foreign key references Parts(PartId),
+Quantity int not null check(Quantity > 0 ) default 1,
+constraint PK_PartsNeeded primary key (JobId, PartId)
+)
+
+ONE GO 
+
+Create database WMS
+go
+use WMS 
+go
+
+create table Clients
+(
+--ClientId	32-bit Integer	Primary table identificator, Identity
+--FirstName	String up to 50 symbols, ASCII	
+--LastName	String up to 50 symbols, ASCII	
+--Phone	String containing 12 symbols	String length is exactly 12 chars long
+ClientId int identity primary key not null,
+FirstName varchar(50) not null,
+LastName varchar(50) not null,
+Phone char(12) not null
+)
+go
+
+create table Mechanics
+(
+--MechanicId	32-bit Integer	Primary table identificator, Identity
+--FirstName	String up to 50 symbols, ASCII	
+--LastName	String up to 50 symbols, ASCII	
+--Address	String up to 255 symbols, ASCII	
+MechanicId int identity primary key not null,
+FirstName varchar(50) not null,
+LastName varchar(50) not null,
+Address varchar(255) not null,
+)
+go
+
+create table Models
+(
+--ModelId	32-bit Integer	Primary table identificator, Identity
+--Name	String up to 50 symbols, ASCII	Unique
+ModelId int primary key identity not null,
+Name varchar(50) unique not null
+)
+go
+create table Jobs
+(
+--JobId	32-bit Integer	Primary table identificator, Identity
+--ModelId	32-bit Integer	Relationship with table Models
+--Status	String up to 11 symbols, ASCII	Allowed values: 'Pending', 'In Progress' and 'Finished'; Default value is 'Pending'
+--ClientId	32-bit Integer	Relationship with table Clients
+--MechanicId	32-bit Integer	Relationship with table Mechanics; Can be NULL
+--IssueDate	Date	
+--FinishDate	Date	Can be NULL
+
+JobId int primary key identity not null,
+ModelId int not null foreign key references Models(ModelId),
+Status varchar(11) not null check([Status] in ('Pending', 'In Progress', 'Finished')) default('Pending'),
+ClientId int not null foreign key references Clients(ClientId),
+MechanicId int foreign key references Mechanics(MechanicId),
+IssueDate date not null,
+FinishDate date 
+)
+go
+
+create table Orders
+(
+--OrderId	32-bit Integer	Primary table identificator, Identity
+--JobId	32-bit Integer	Relationship with table Jobs
+--IssueDate	Date	Can be NULL
+--Delivered	Boolean	Default value is False
+OrderId int not null primary key identity,
+JobId int not null foreign key references Jobs(JobId),
+IssueDate date,
+Delivered bit not null default 0
+)
+go
+
+create table Vendors
+(
+--VendorId	32-bit Integer	Primary table identificator, Identity
+--Name	String up to 50 symbols, ASCII	Unique
+VendorId int primary key not null identity,
+Name varchar(50) not null unique
+)
+go
+
+create table Parts
+(
+--PartId	32-bit Integer	Primary table identificator, Identity
+--SerialNumber	String up to 50 symbols, ASCII	Unique
+--Description	String up to 255 symbols, ASCII	Can be NULL
+--Price	Monetary value up to 9999.99	Cannot be zero or negative
+--VendorId	32-bit Integer	Relationship with table Vendors
+--StockQty	32-bit Integer	Cannot be negative; Default value is 0
+PartId int identity not null primary key,
+SerialNumber varchar(50) unique not null,
+Description varchar(255),
+Price decimal(6,2) check (Price > 0) not null,
+VendorId int not null foreign key references Vendors(VendorId),
+StockQty int not null check(StockQty >= 0) default 0
+)
+go
+
+create table OrderParts 
+(
+--OrderId	32-bit Integer	Relationship with table Orders; Primary table identificator
+--PartId	32-bit Integer	Relationship with table Parts; Primary table identificator
+--Quantity	32-bit Integer	Cannot be zero or negative; Default value is 1
+
+OrderId int not null foreign key references Orders(OrderId),
+PartId int not null foreign key references Parts(PartId),
+Quantity int not null check(Quantity > 0 ) default 1,
+constraint PK_OrderParts primary key (OrderId, PartId)
+)
+go
+
+create table PartsNeeded
+(
+--JobId	32-bit Integer	Relationship with table Jobs;Primary table identificator
+--PartId	32-bit Integer	Relationship with table Parts;Primary table identificator
+--Quantity	32-bit Integer	Cannot be zero or negative; Default value is 1
+
+JobId int not null foreign key references Jobs(JobId),
+PartId int not null foreign key references Parts(PartId),
+Quantity int not null check(Quantity > 0 ) default 1,
+constraint PK_PartsNeeded primary key (JobId, PartId)
+)

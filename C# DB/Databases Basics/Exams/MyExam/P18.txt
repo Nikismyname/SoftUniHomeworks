@@ -1,0 +1,43 @@
+create function udf_GetPromotedProducts (@CurrentDate datetime, @StartDate datetime, @EndDate datetime,
+@Discount int , @FirstItemId int, @SecondItemId int, @ThirdItemId int)
+returns nvarchar(max) 
+begin
+	if(select isnull(count(i.Id),0) from Items as i where i.Id = @FirstItemId) = 0 
+	begin
+	return 'One of the items does not exists!'
+	end 
+
+	if(select isnull(count(i.Id),0) from Items as i where i.Id = @SecondItemId) = 0 
+	begin 
+	return 'One of the items does not exists!'
+	end 
+
+	if(select isnull(count(i.Id),0) from Items as i where i.Id = @ThirdItemId) = 0 
+	begin 
+	return 'One of the items does not exists!'
+	end 
+
+	if(@CurrentDate < @StartDate)
+	begin
+	return 'The current date is not within the promotion dates!' 
+	end 
+
+	if(@CurrentDate > @EndDate)
+	begin
+	return 'The current date is not within the promotion dates!' 
+	end
+
+	declare @product1String nvarchar(100) = 
+	(select i.Name + ' price: ' + cast (cast (i.Price - i.Price/100 * @Discount as decimal(15,2)) as nvarchar(max)) from Items as i 
+	where i.Id = @FirstItemId)
+
+	declare @product2String nvarchar(100) = 
+	(select i.Name + ' price: ' + cast (cast (i.Price - i.Price/100 * @Discount  as decimal(15,2)) as nvarchar(max)) from Items as i 
+	where i.Id = @SecondItemId)
+
+	declare @product3String nvarchar(100) = 
+	(select i.Name + ' price: ' + cast (cast (i.Price - i.Price/ 100 *@Discount  as decimal(15,2))  as nvarchar(max)) from Items as i 
+	where i.Id = @ThirdItemId)
+
+	return @product1String + ' <-> ' + @product2String + ' <-> ' + @product3String
+end

@@ -1,0 +1,88 @@
+create table Cities
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 20 symbols, Unicode	NULL is not allowed
+--CountryCode	String with exactly 2 symbols	NULL is not allowed
+
+Id int primary key identity,
+[Name] nvarchar(20) not null,
+CountryCode char(2) not null
+)
+
+create table Hotels
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 30 symbols, Unicode	NULL is not allowed
+--CityId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Cities
+--EmployeeCount	Integer from 0 to 2,147,483,647	NULL is not allowed
+--BaseRate	Decimal number with two-digit precision	
+
+Id int primary key identity,
+[Name] nvarchar(30) not null,
+CityId int not null foreign key references Cities(Id),
+EmployeeCount int not null,
+BaseRate decimal(20,2)
+)
+
+create table Rooms
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Price	Decimal number with two-digit precision	NULL is not allowed
+--Type	String up to 20 symbols, Unicode	NULL is not allowed
+--Beds	Integer from 0 to 2,147,483,647	NULL is not allowed
+--HotelId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Hotels
+
+Id int not null identity primary key,
+Price decimal(20,2) not null,
+[Type] nvarchar(20) not null,
+Beds int not null,
+HotelId int foreign key references Hotels(Id),
+)
+
+create table Trips
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--RoomId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Rooms
+--BookDate	Date	NULL is not allowed, must be before ArrivalDate
+--ArrivalDate	Date	NULL is not allowed, must be before ReturnDate
+--ReturnDate	Date	NULL is not allowed
+--CancelDate	Date	
+
+Id int identity primary key,
+RoomId int not null foreign key references Rooms(Id),
+BookDate date not null,
+ArrivalDate date not null,
+ReturnDate date not null,
+CancelDate date,
+constraint CK_BookDate_Before_ArrivalDate check (BookDate < ArrivalDate),
+constraint CK_ArrivalDate_Before_ReturnDate check( ArrivalDate < ReturnDate)
+)
+
+create table Accounts
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--FirstName	String up to 50 symbols, Unicode	NULL is not allowed
+--MiddleName	String up to 20 symbols, Unicode	
+--LastName	String up to 50 symbols, Unicode	NULL is not allowed
+--CityId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Cities
+--BirthDate	Date	NULL is not allowed
+--Email	String up to 100 symbols	NULL is not allowed, Unique
+Id int identity primary key,
+FirstName nvarchar(50) not null,
+MiddleName nvarchar(20),
+LastName nvarchar(50) not null,
+CityId int not null foreign key references Cities(Id),
+BirthDate date not null,
+Email varchar(100) not null unique 
+)
+
+create table AccountsTrips
+(
+--AccountId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Accounts
+--TripId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Trips
+--Luggage	Integer from 0 to 2,147,483,647	NULL is not allowed, must be at least 0
+AccountId int not null foreign key references Accounts(Id),
+TripId int not null foreign key references Trips(Id),
+Luggage int not null check(Luggage >= 0),
+primary key (AccountId, TripId)
+)

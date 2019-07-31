@@ -1,0 +1,7 @@
+select c.[Name] from Categories as c 
+join Reports as r on r.CategoryId = c.Id
+join Users as u on u.Id = r.UserId
+where DATEPART (MONTH, r.OpenDate) = DATEPART (MONTH, u.BirthDate) and 
+	DATEPART(DAY, r.OpenDate) = DATEPART (DAY, u.BirthDate)
+group by c.Id, c.[Name]
+order by c.[Name]

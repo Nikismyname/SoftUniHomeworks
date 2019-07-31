@@ -1,0 +1,14 @@
+select q.[Name], q.Email, q.Bill, q.Town from 
+(select 
+	c.Id,
+	c.FirstName + ' ' + c.LastName as [Name],
+	c.Email,
+	o.Bill,
+	t.[Name] as Town,
+	row_number() over (partition by o.TownId order by o.Bill desc) as rowNumber
+from Clients as c
+join Orders as o on o.ClientId = c.Id
+join Towns as t on t.Id = o.TownId
+where CardValidity < o.CollectionDate and o.Bill is not null) as q
+where q.rowNumber in (1,2)
+order by q.Town, q.Bill asc, q.Id

@@ -1,0 +1,12 @@
+select top(10) 
+	s.Id,
+	s.[Name],
+	sum(h.BaseRate + r.Price) as [Total Revenue],
+	count(t.Id) as Trips
+from Trips as t 
+join Rooms as r on r.Id = t.RoomId
+join Hotels as h on h.Id = r.HotelId
+join Cities as s on s.Id = h.CityId
+where year(t.BookDate) = 2016
+group by s.Id, s.[Name]
+order by [Total Revenue] desc, Trips desc

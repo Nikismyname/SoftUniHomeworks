@@ -1,0 +1,65 @@
+create procedure usp_PlaceOrder (@jobId int, @partSerialNumber nvarchar(50), @quantity int)
+as 
+begin 
+	begin transaction
+	
+	if(select j.Status from Jobs as j
+	   where j.JobId = @jobId) = 'Finished'
+	begin 
+	    RAISERROR ('This job is not active!',16,1)
+		rollback 
+	end
+
+	if(@quantity <= 0) 
+	begin 
+		RAISERROR ('Part quantity must be more than zero!', 16, 1)
+		rollback
+	end 
+
+	if(select isnull(count(j.JobId), 0) from Jobs as j
+	   where j.JobId = @jobId) = 0 
+	begin 
+		RAISERROR ('Job not found!', 16,1)
+		rollback
+	end 
+
+	declare @partId int = (select p.PartId from Parts as p where p.SerialNumber = @partSerialNumber)
+
+	if @partId is null
+	begin 
+		RAISERROR ('Part not found!',16,1)
+		rollback
+	end 
+	
+	if(select isnull(count (o.OrderId),0)from Jobs as j 
+	   join Orders as o on o.JobId = j.JobId
+	   where o.IssueDate is null and j.JobId = @jobId) > 0 
+	begin 
+		declare @exstintOrderId int = (select o.OrderId from Jobs as j 
+									   join Orders as o on o.JobId = j.JobId
+									   where o.IssueDate is null and j.JobId = @jobId)
+
+		if (select isnull(count(op.PartId),0) from Orders as o 
+			join OrderParts as op on op.OrderId = o.OrderId
+			where o.OrderId = @exstintOrderId and op.PartId = @partId) = 0
+		begin 
+			insert into OrderParts values 
+			(@exstintOrderId, @partId, @quantity)
+		end
+		else 
+		begin
+			update OrderParts 
+			set Quantity = Quantity + @quantity
+			where OrderId = @exstintOrderId and PartId = @partId
+		end
+	end 
+	else 
+	begin
+		insert into Orders values 
+		(@jobId, null, 0)
+		declare @orderId int = (select o.OrderId from Orders as o where o.JobId = @jobId and o.IssueDate is null)
+		insert into OrderParts values 
+		(@orderId, @partId, @quantity)
+	end
+	commit
+end 

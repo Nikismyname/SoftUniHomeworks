@@ -1,0 +1,2 @@
+select c.FirstName, c.LastName, c.Phone from Clients as c 
+order by c.LastName, c.ClientId

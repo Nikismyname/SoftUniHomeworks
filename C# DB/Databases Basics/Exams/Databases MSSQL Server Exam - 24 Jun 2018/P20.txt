@@ -1,0 +1,7 @@
+create trigger OnTipDelete ON Trips instead of delete 
+as 
+begin
+	update Trips 
+	set CancelDate = getdate()
+	where Id in (select d.Id from deleted as d where d.CancelDate is null) 
+end 

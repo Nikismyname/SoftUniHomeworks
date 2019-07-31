@@ -1,0 +1,9 @@
+select 
+	m.ModelId,
+	m.Name,
+	cast (avg(datediff(day, j.IssueDate, j.FinishDate))as nvarchar(50)) + ' days' as [Average Service Time] 
+from Models as m 
+join Jobs as j on j.ModelId = m.ModelId
+where j.Status = 'Finished'
+group by m.ModelId, m.Name
+order by avg(datediff(day, j.IssueDate, j.FinishDate))

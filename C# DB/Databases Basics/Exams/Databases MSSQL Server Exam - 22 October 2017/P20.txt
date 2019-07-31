@@ -1,0 +1,29 @@
+select 
+	c.[Name] as [Category Name],
+	count(*) as [Reports Number],
+	case when 
+	(select COUNT(*) from Categories as c1 
+	join Reports as r1 on r1.CategoryId = c1.Id
+	where r1.StatusId = 1 and c1.Id = c.Id)
+	>
+	(select COUNT(*) from Categories as c1 
+	join Reports as r1 on r1.CategoryId = c1.Id
+	where r1.StatusId = 2 and c1.Id = c.Id) 
+	then 'waiting'
+	when 
+	(select COUNT(*) from Categories as c1 
+	join Reports as r1 on r1.CategoryId = c1.Id
+	where r1.StatusId = 1 and c1.Id = c.Id)
+	<
+	(select COUNT(*) from Categories as c1 
+	join Reports as r1 on r1.CategoryId = c1.Id
+	where r1.StatusId = 2 and c1.Id = c.Id) 
+	then 'in progress'
+	else 'equal'
+	end
+	as 'Main Status'
+from Categories as c 
+join Reports as r on r.CategoryId = c.Id
+where r.StatusId in (1,2)
+group by c.Id, c.[Name]
+order by c.[Name], [Reports Number]

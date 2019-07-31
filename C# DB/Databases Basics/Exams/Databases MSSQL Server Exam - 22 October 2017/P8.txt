@@ -1,0 +1,4 @@
+select c.[Name] , count(*) as ReportsNumber from Categories as c
+join Reports as r on r.CategoryId = c.id 
+group by c.[Name]
+order by count(*) desc, c.Name asc

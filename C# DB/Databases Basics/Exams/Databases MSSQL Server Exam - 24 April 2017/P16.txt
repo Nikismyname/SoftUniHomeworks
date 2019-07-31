@@ -1,0 +1,17 @@
+select * from 
+	(select 
+		p.PartId,
+		p.[Description],
+		pn.Quantity as [Required],
+		p.StockQty as [In Stock],
+			(select isnull(sum(op.Quantity), 0) from Orders as o1 
+			join OrderParts as op on op.OrderId = o1.OrderId
+			where o1.OrderId = o.OrderId and op.PartId = p.PartId and o1.Delivered = 0) 
+		as Ordered
+	from Jobs as j 
+	join PartsNeeded as pn on pn.JobId = j.JobId
+	join Parts as p on p.PartId = pn.PartId
+	left join Orders as o on o.JobId = j.JobId
+	where j.Status != 'Finished') as h 
+where h.Required > h.[In Stock] + h.Ordered
+order by h.PartId asc

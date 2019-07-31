@@ -1,0 +1,3 @@
+select r.Description, r.OpenDate from Reports as r 
+where r.EmployeeId is null
+order by r.OpenDate asc, r.Description asc

@@ -1,0 +1,20 @@
+create function udf_CheckForVehicle(@townName nvarchar(50), @seatsNumber int)
+returns nvarchar(50)
+begin
+	declare @carString nvarchar(100) = 
+		(select top(1)  
+			o.[Name] + ' - ' + m.Model as car 
+		from Vehicles as v 
+		join Offices as o on o.Id = v.OfficeId
+		join Towns as t on t.Id = o.TownId
+		join Models as m on m.Id = v.ModelId
+		where t.[Name] = @townName and  m.Seats = @seatsNumber
+		order by o.[Name] asc)
+
+		if @carString is null 
+		begin
+			return 'NO SUCH VEHICLE FOUND' 
+		end 
+
+	return @carString 
+end 

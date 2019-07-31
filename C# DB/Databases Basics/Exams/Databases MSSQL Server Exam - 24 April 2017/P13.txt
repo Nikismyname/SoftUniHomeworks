@@ -1,0 +1,10 @@
+select 
+	j.JobId,
+	isnull(sum(op.Quantity * p.Price),0) as Total
+from Jobs as j
+left join Orders as o on o.JobId = j.JobId
+left join OrderParts as op on op.OrderId = o.OrderId
+left join Parts as p on p.PartId = op.PartId
+where j.Status = 'Finished'
+group by j.JobId
+order by Total desc, j.JobId

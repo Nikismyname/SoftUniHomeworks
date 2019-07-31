@@ -1,0 +1,4 @@
+select top(5) c.Id , c.[Name], c.CountryCode, count(a.Id) from Cities as c 
+join Accounts as a on a.CityId = c.Id
+group by c.Id, c.[Name], c.CountryCode
+order by count(a.Id) desc 

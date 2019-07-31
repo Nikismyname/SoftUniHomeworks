@@ -1,0 +1,2 @@
+ Delete from Reports
+ where StatusId = 4

@@ -1,0 +1,96 @@
+create table Clients
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--FirstName	String up to 30 symbols, Unicode	NULL is not allowed
+--LastName	String up to 30 symbols, Unicode	NULL is not allowed
+--Gender	Character with exactly 1 symbol	Could be: 'M' or 'F'
+--BirthDate	DateTime	
+--CreditCard	String up to 30 symbols, Unicode	NULL is not allowed
+--CardValidity	DateTime	
+--Email	String up to 50 symbols, Unicode	NULL is not allowed
+
+	Id int identity primary key,
+	FirstName nvarchar(30) not null,
+	LastName nvarchar(30) not null,
+	Gender char(1),
+	BirthDate datetime,
+	CreditCard nvarchar(30) not null,
+	CardValidity datetime,
+	Email nvarchar(50) not null,
+
+	constraint CK_Gender_MorF check (Gender in ('F','M'))
+) 
+
+create table Towns 
+(
+--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+--Name	String up to 50 symbols, Unicode	NULL is not allowed
+	Id int identity primary key,
+	[Name] nvarchar(50) not null,
+)
+
+create table Offices
+(
+	--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+	--Name	String up to 40 symbols, Unicode	
+	--ParkingPlaces	Integer from 0 to 2,147,483,647	
+	--TownId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Towns
+	Id int identity primary key,
+	[Name] nvarchar(40),
+	ParkingPlaces int,
+	TownId int not null foreign key references Towns(Id) 
+)
+
+create table Models
+(
+	--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+	--Manufacturer	String up to 50 symbols, Unicode	NULL is not allowed
+	--Model	String up to 50 symbols, Unicode	NULL is not allowed
+	--ProductionYear	DateTime	
+	--Seats	Integer from 0 to 2,147,483,647	
+	--Class	String up to 10 symbols, Unicode	
+	--Consumption	Decimal up to 14 digits with 2 digits precision after the decimal point	
+	Id int identity primary key,
+	Manufacturer nvarchar(50) not null,
+	Model nvarchar(50) not null,
+	ProductionYear datetime,
+	Seats int,
+	Class nvarchar(10),
+	Consumption decimal(14,2)
+)
+
+create table Vehicles
+(
+	--Id	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+	--ModelId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Models
+	--OfficeId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Offices
+	--Mileage	Integer from 0 to 2,147,483,647	
+	Id int identity primary key,
+	ModelId int not null foreign key references Models(Id),
+	OfficeId int not null foreign key references Offices(Id),
+	Mileage int,
+)
+
+create table Orders
+(
+	--XId	Integer from 0 to 2,147,483,647	Unique table identificator, Identity
+	--XClientId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Clients
+	--XTownId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Towns
+	--XVehicleId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Vehicles
+	--XCollectionDate	DateTime	NULL is not allowed
+	--XCollectionOfficeId	Integer from 0 to 2,147,483,647	NULL is not allowed, Relationship with table Offices
+	--XXReturnDate	DateTime	Relationship with table Offices
+	--XReturnOfficeId	Integer from 0 to 2,147,483,647	Relationship with table Offices
+	--Bill	Decimal up to 14 digits with 2 digits precision after the decimal point	
+	--TotalMileage	Integer from 0 to 2,147,483,647	
+	Id int identity primary key,
+	ClientId int not null foreign key references Clients(Id),
+	TownId int not null foreign key references Towns(Id),
+	VehicleId int not null foreign key references Vehicles(Id),
+	CollectionDate datetime not null,
+	CollectionOfficeId int not null foreign key references Offices(Id),
+	ReturnDate datetime,
+	ReturnOfficeId int foreign key references Offices(Id),
+	Bill decimal(14,2),
+	TotalMileage int,
+)

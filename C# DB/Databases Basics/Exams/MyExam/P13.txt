@@ -1,0 +1,11 @@
+select top (10)
+	e.FirstName + ' '+ e.LastName as [Full Name],
+	sum (i.Price * oi.Quantity) as [Total Price],
+	sum (oi.Quantity) as Items
+from Employees as e 
+join Orders as o on o.EmployeeId = e.Id
+join OrderItems as oi on oi.OrderId = o.Id
+join Items as i on i.Id = oi.ItemId
+where o.[DateTime] < '2018-06-15'
+group by e.Id, e.FirstName, e.LastName
+order by [Total Price] desc, Items desc

@@ -1,0 +1,5 @@
+select r.Id, r.Price, h.Name, c.Name from Rooms as r
+join Hotels as h on h.Id = r.HotelId
+join Cities as c on c.Id = h.CityId
+where r.[Type] = 'First Class'
+order by r.Price desc, r.Id

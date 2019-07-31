@@ -1,0 +1,13 @@
+select 
+	t.Id,
+	h.[Name] as [HotelName],
+	r.[Type] as [RoomType],
+	case when t.CancelDate is not null then 0 
+	else sum(h.BaseRate + r.Price) 
+	end as Revenue 
+from Trips as t 
+join Rooms as r on r.Id = t.RoomId
+join Hotels as h on h.Id = r.HotelId
+join AccountsTrips as ta on ta.TripId = t.Id
+group by t.Id, h.[Name], r.[Type], t.CancelDate
+order by r.[Type], t.Id

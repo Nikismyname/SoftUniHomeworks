@@ -1,0 +1,5 @@
+select e.FirstName, e.LastName, r.[Description],
+format(r.OpenDate, 'yyyy-MM-dd') as [OpenDate] 
+from Reports as r 
+join Employees as e on e.Id = r.EmployeeId
+order by e.Id asc, r.OpenDate asc, r.Id asc

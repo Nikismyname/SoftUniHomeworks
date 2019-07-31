@@ -1,0 +1,19 @@
+select 
+	query.[Name], 
+	cast (query.ClosedCases as nvarchar(50)) + '/' + cast(query.OpenCases as nvarchar(50)) as [Closed Open Reports] from 
+(select 
+(
+	select count(*) from Employees as e2
+	join Reports as r2 on r2.EmployeeId = e2.Id
+	where e2.Id = e.Id and datepart(year, r2.OpenDate) = 2016 --and r2.CloseDate is null
+) as OpenCases,
+(
+	select count(*) from Employees as e3
+	join Reports as r3 on r3.EmployeeId = e3.Id
+	where e3.Id = e.Id and datepart(year, r3.CloseDate) = 2016
+) as ClosedCases,
+e.FirstName + ' ' + e.LastName as [Name],
+e.id
+from Employees as e) as query
+where query.OpenCases != 0 or query.ClosedCases != 0
+order by query.[Name], query.Id

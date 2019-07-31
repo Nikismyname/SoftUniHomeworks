@@ -1,0 +1,3 @@
+select c.FirstName, c.LastName from Clients as c
+where datepart(year, c.BirthDate) between 1977 and 1994 
+order by c.FirstName, c.LastName, c.Id
